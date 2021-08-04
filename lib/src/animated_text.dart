@@ -111,6 +111,8 @@ class AnimatedTextKit extends StatefulWidget {
   /// By default it is set to 3
   final int totalRepeatCount;
 
+  final AnimationController? controller;
+
   const AnimatedTextKit({
     Key? key,
     required this.animatedTexts,
@@ -124,6 +126,7 @@ class AnimatedTextKit extends StatefulWidget {
     this.isRepeatingAnimation = true,
     this.totalRepeatCount = 3,
     this.repeatForever = false,
+    this.controller,
   })  : assert(animatedTexts.length > 0),
         assert(!isRepeatingAnimation || totalRepeatCount > 0 || repeatForever),
         assert(null == onFinished || !repeatForever),
@@ -167,7 +170,7 @@ class _AnimatedTextKitState extends State<AnimatedTextKit>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _onTap,
-      child: _isCurrentlyPausing || !_controller.isAnimating
+      child: _isCurrentlyPausing
           ? completeText
           : AnimatedBuilder(
               animation: _controller,
@@ -214,16 +217,19 @@ class _AnimatedTextKitState extends State<AnimatedTextKit>
   void _initAnimation() {
     _currentAnimatedText = widget.animatedTexts[_index];
 
-    _controller = AnimationController(
-      duration: _currentAnimatedText.duration,
-      vsync: this,
-    );
+    _controller = widget.controller ??
+        AnimationController(
+          duration: _currentAnimatedText.duration,
+          vsync: this,
+        );
 
     _currentAnimatedText.initAnimation(_controller);
 
-    _controller
-      ..addStatusListener(_animationEndCallback)
-      ..forward();
+    _controller.addStatusListener(_animationEndCallback);
+
+    if (widget.controller == null) {
+      _controller.forward();
+    }
   }
 
   void _setPause() {
