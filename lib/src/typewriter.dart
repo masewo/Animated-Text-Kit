@@ -8,7 +8,7 @@ import 'animated_text.dart';
 /// ![Typewriter example](https://raw.githubusercontent.com/aagarwal1012/Animated-Text-Kit/master/display/typewriter.gif)
 class TypewriterAnimatedText extends AnimatedText {
   // The text length is padded to cause extra cursor blinking after typing.
-  static const extraLengthForBlinks = 8;
+  final int extraLengthForBlinks;
 
   /// The [Duration] of the delay between the apparition of each characters
   ///
@@ -30,6 +30,7 @@ class TypewriterAnimatedText extends AnimatedText {
     this.speed = const Duration(milliseconds: 30),
     this.curve = Curves.linear,
     this.cursor = '_',
+    this.extraLengthForBlinks = 8,
   }) : super(
           text: text,
           textAlign: textAlign,
